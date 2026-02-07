@@ -1,0 +1,39 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v8.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v8.0": {
+      "Labyrinth.Core/1.0.0": {
+        "dependencies": {
+          "ApiTypes": "1.0.0"
+        },
+        "runtime": {
+          "Labyrinth.Core.dll": {}
+        }
+      },
+      "ApiTypes/1.0.0": {
+        "runtime": {
+          "ApiTypes.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "Labyrinth.Core/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "ApiTypes/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

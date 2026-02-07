@@ -1,0 +1,15 @@
+/Users/elia/Downloads/labyrinth-final-3/Labyrinth.Core/bin/Release/net8.0/Labyrinth.Core.deps.json
+/Users/elia/Downloads/labyrinth-final-3/Labyrinth.Core/bin/Release/net8.0/Labyrinth.Core.dll
+/Users/elia/Downloads/labyrinth-final-3/Labyrinth.Core/bin/Release/net8.0/Labyrinth.Core.pdb
+/Users/elia/Downloads/labyrinth-final-3/Labyrinth.Core/bin/Release/net8.0/ApiTypes.dll
+/Users/elia/Downloads/labyrinth-final-3/Labyrinth.Core/bin/Release/net8.0/ApiTypes.pdb
+/Users/elia/Downloads/labyrinth-final-3/Labyrinth.Core/obj/Release/net8.0/Labyrinth.Core.csproj.AssemblyReference.cache
+/Users/elia/Downloads/labyrinth-final-3/Labyrinth.Core/obj/Release/net8.0/Labyrinth.Core.GeneratedMSBuildEditorConfig.editorconfig
+/Users/elia/Downloads/labyrinth-final-3/Labyrinth.Core/obj/Release/net8.0/Labyrinth.Core.AssemblyInfoInputs.cache
+/Users/elia/Downloads/labyrinth-final-3/Labyrinth.Core/obj/Release/net8.0/Labyrinth.Core.AssemblyInfo.cs
+/Users/elia/Downloads/labyrinth-final-3/Labyrinth.Core/obj/Release/net8.0/Labyrinth.Core.csproj.CoreCompileInputs.cache
+/Users/elia/Downloads/labyrinth-final-3/Labyrinth.Core/obj/Release/net8.0/Labyrint.5950288B.Up2Date
+/Users/elia/Downloads/labyrinth-final-3/Labyrinth.Core/obj/Release/net8.0/Labyrinth.Core.dll
+/Users/elia/Downloads/labyrinth-final-3/Labyrinth.Core/obj/Release/net8.0/refint/Labyrinth.Core.dll
+/Users/elia/Downloads/labyrinth-final-3/Labyrinth.Core/obj/Release/net8.0/Labyrinth.Core.pdb
+/Users/elia/Downloads/labyrinth-final-3/Labyrinth.Core/obj/Release/net8.0/ref/Labyrinth.Core.dll

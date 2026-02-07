@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "PsPEpER1OOc=",
+  "success": true,
+  "projectFilePath": "/Users/elia/Downloads/labyrinth-elia-leprevost/Labyrinth.Core/Labyrinth.Core.csproj",
+  "expectedPackageFiles": [
+    "/Users/elia/.nuget/packages/microsoft.netcore.app.ref/8.0.20/microsoft.netcore.app.ref.8.0.20.nupkg.sha512",
+    "/Users/elia/.nuget/packages/microsoft.aspnetcore.app.ref/8.0.20/microsoft.aspnetcore.app.ref.8.0.20.nupkg.sha512"
+  ],
+  "logs": []
+}
