@@ -134,11 +134,6 @@ public class ExplorerAgentCompetitionTests
                     Y += Direction.DeltaY;
                 }
             }
-            else
-            {
-                if (_facing.Count > 0) _facing.Dequeue();
-            }
-
             return Task.FromResult(result);
         }
     }
