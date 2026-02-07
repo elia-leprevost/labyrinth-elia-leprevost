@@ -29,7 +29,6 @@ public sealed class ExplorerAgent
         {
             var current = Position;
 
-            // 1) Observe facing tile
             var facingType = await _crawler.FacingTileType;
             var facingKind = TileTypeToKind(facingType);
 
@@ -40,12 +39,17 @@ public sealed class ExplorerAgent
                 MovedTo: null
             ), ct);
 
-            // 2) If we can walk, do it (greedy)
             if (facingKind is CellKind.Room or CellKind.Door)
             {
                 var inv = await _crawler.TryWalk(_bag);
                 if (inv is not null)
                 {
+                    
+                    await _bag.TryMoveItemsFrom(
+                        inv,
+                        inv.ItemTypes.Select(_ => true).ToList()
+                    );
+
                     var movedTo = Position;
                     await _coord.PublishAsync(new Observation(
                         From: current,
@@ -53,17 +57,17 @@ public sealed class ExplorerAgent
                         FacingKind: facingKind,
                         MovedTo: movedTo
                     ), ct);
-                    // Small delay to avoid spamming
+
+                    
                     await Task.Delay(10, ct);
                     continue;
                 }
             }
 
-            // 3) Otherwise, navigate to an assigned frontier
             var frontier = _coord.ReserveFrontier(Id, current);
             if (frontier is null)
             {
-                // Nothing to do, random turn
+
                 if (rnd.NextDouble() < 0.5) _crawler.Direction.TurnLeft();
                 else _crawler.Direction.TurnRight();
                 await Task.Delay(10, ct);
@@ -75,7 +79,7 @@ public sealed class ExplorerAgent
 
             if (path.Count < 2)
             {
-                // Can't reach, release and random turn
+
                 _coord.ReleaseReservation(Id, frontier.Value);
                 if (rnd.NextDouble() < 0.5) _crawler.Direction.TurnLeft();
                 else _crawler.Direction.TurnRight();
@@ -86,31 +90,48 @@ public sealed class ExplorerAgent
             var next = path[1];
             await TurnTowardAsync(current, next, ct);
 
-            // attempt walk after turning
+            
+            var facingTypeNow = await _crawler.FacingTileType;
+            var facingKindNow = TileTypeToKind(facingTypeNow);
+
+
             var inv2 = await _crawler.TryWalk(_bag);
             if (inv2 is not null)
             {
+            
+                await _bag.TryMoveItemsFrom(
+                    inv2,
+                    inv2.ItemTypes.Select(_ => true).ToList()
+                );
+
                 var movedTo = Position;
                 await _coord.PublishAsync(new Observation(
                     From: current,
                     Dir: (_crawler.Direction.DeltaX, _crawler.Direction.DeltaY),
-                    FacingKind: facingKind,
+                    FacingKind: facingKindNow,
                     MovedTo: movedTo
                 ), ct);
             }
             else
             {
-                // blocked => mark as wall if we didn't already know
-                var blocked = current + (_crawler.Direction.DeltaX, _crawler.Direction.DeltaY);
+                var realFacingType = await _crawler.FacingTileType;
+                var realFacingKind = TileTypeToKind(realFacingType);
+
                 await _coord.PublishAsync(new Observation(
                     From: current,
                     Dir: (_crawler.Direction.DeltaX, _crawler.Direction.DeltaY),
-                    FacingKind: CellKind.Wall,
+                    FacingKind: realFacingKind,
                     MovedTo: null
                 ), ct);
+
+                
+                if (realFacingKind is CellKind.Door)
+                {
+                    if (rnd.NextDouble() < 0.5) _crawler.Direction.TurnLeft();
+                    else _crawler.Direction.TurnRight();
+                }
             }
 
-            // If we reached the frontier cell, release reservation
             if (Position.Equals(frontier.Value))
                 _coord.ReleaseReservation(Id, frontier.Value);
 
@@ -135,7 +156,7 @@ public sealed class ExplorerAgent
         };
         if (desired == (0, 0)) return;
 
-        // rotate until direction matches; remote crawler updates direction cache through FacingTileType
+        
         for (var i = 0; i < 4; i++)
         {
             if ((_crawler.Direction.DeltaX, _crawler.Direction.DeltaY) == desired) break;
