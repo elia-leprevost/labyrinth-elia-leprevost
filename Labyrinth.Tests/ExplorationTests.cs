@@ -26,6 +26,30 @@ public class PathfinderTests
         path.Count.Should().Be(5);
         path.Should().NotContain(new Position(1,1));
     }
+
+    [Fact]
+public void BfsPath_can_forbid_doors_via_isTraversable_filter()
+{
+    var map = new Dictionary<Position, CellKind>
+    {
+        [new Position(0,0)] = CellKind.Room,
+        [new Position(1,0)] = CellKind.Door,
+        [new Position(2,0)] = CellKind.Room
+    };
+
+    var pathDefault = Pathfinder.BfsPath(map, new Position(0,0), new Position(2,0));
+    pathDefault.Should().NotBeEmpty();
+    pathDefault.Count.Should().Be(3);
+
+    var pathNoDoor = Pathfinder.BfsPath(
+        map,
+        new Position(0,0),
+        new Position(2,0),
+        isTraversable: k => k == CellKind.Room
+    );
+    pathNoDoor.Should().BeEmpty();
+}
+
 }
 
 public class CoordinatorTests
