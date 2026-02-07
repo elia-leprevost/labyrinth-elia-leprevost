@@ -7,12 +7,7 @@ namespace Labyrinth
 {
     public partial class Labyrinth
     {
-        /// <summary>
         /// Labyrinth with walls, doors and collectable items.
-        /// </summary>
-        /// <param name="builder">Builder used to create the labyrinth.</param>
-        /// <exception cref="ArgumentException">Thrown when string argument reveals inconsistent map sizes or characters with no starting position.</exception>
-        /// <exception cref="NotSupportedException">Thrown for multiple doors (resp. key locations) before key locations (resp. doors).</exception>
         public Labyrinth(IBuilder builder)
         {
             builder.StartPositionFound+= (s, e) => _start = (e.X, e.Y);
@@ -27,20 +22,13 @@ namespace Labyrinth
             }
         }
 
-        /// <summary>
         /// Labyrinth width (number of columns).
-        /// </summary>
         public int Width { get; private init; }
 
-        /// <summary>
         /// Labyrinth height (number of rows).
-        /// </summary>
         public int Height { get; private init; }
 
-        /// <summary>
         /// An ascii representation of the labyrinth.
-        /// </summary>
-        /// <returns>Formatted string</returns>
         public override string ToString()
         {
             var res = new StringBuilder();
@@ -63,10 +51,7 @@ namespace Labyrinth
             return res.ToString();
         }
 
-        /// <summary>
         /// Instantiate a new crawler at the starting position.
-        /// </summary>
-        /// <returns>New crawler instance used to browse the labyrinth.</returns>
         public ICrawler NewCrawler() =>
             new LabyrinthCrawler(_start.X, _start.Y, _tiles);
 

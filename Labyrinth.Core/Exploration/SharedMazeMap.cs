@@ -16,8 +16,6 @@ public sealed class SharedMazeMap
     /// </summary>
     public bool Upsert(Position p, CellKind kind)
     {
-        // Do not overwrite stronger info with weaker info.
-        // Priority: Outside > Wall > Door > Room > Unknown
         static int Rank(CellKind k) => k switch
         {
             CellKind.Outside => 5,

@@ -27,9 +27,6 @@
         /// <summary>
         /// Attempts to move selected items from the specified source inventory to the current inventory.
         /// </summary>
-        /// <remarks>The method does not modify items in the source inventory that are not selected. The
-        /// operation may fail if the current inventory cannot accept the selected items due to capacity or other
-        /// constraints.</remarks>
         /// <param name="source">The inventory from which items will be moved. Cannot be null.</param>
         /// <param name="movesRequired">A list of Boolean values indicating which items in the source inventory to move. Each element corresponds to
         /// an item; <see langword="true"/> selects the item for moving, <see langword="false"/> leaves it in the

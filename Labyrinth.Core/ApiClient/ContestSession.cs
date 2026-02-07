@@ -7,21 +7,8 @@ using Dto = ApiTypes;
 
 namespace Labyrinth.ApiClient
 {
-    /// <summary>
-    /// Represents an active session with a contest server, providing access to crawlers, inventories, and
-    /// labyrinth-building functionality for a specific contest run. This class is not thread-safe.
-    /// </summary>
     public class ContestSession
     {
-        /// <summary>
-        /// Opens a new contest session by connecting to the specified server and preparing a labyrinth with the specified settings.
-        /// </summary>
-        /// <param name="serverUrl">The base URL of the contest server to connect to. Must be a valid absolute URI.</param>
-        /// <param name="appKey">The application key used to authenticate the session with the server.</param>
-        /// <param name="settings">Optional settings to configure the labyrinth. If null, default settings are used.</param>
-        /// <returns>A task that represents the asynchronous operation. The task result contains a ContestSession instance
-        /// connected to the specified server.</returns>
-        /// <exception cref="FormatException">Thrown if response format changed</exception>
         public static async Task<ContestSession> Open(Uri serverUrl, Guid appKey, Dto.Settings? settings = null)
         {
             var http = new HttpClient() { BaseAddress = serverUrl };
@@ -31,14 +18,6 @@ namespace Labyrinth.ApiClient
                 : throw new FormatException("Failed to read a crawler");
         }
 
-        /// <summary>
-        /// Asynchronously quit the labyrinth by deleting all crawlers.
-        /// </summary>
-        /// <remarks>If any crawler fails to close, the returned task will complete in a faulted state
-        /// with the corresponding exception. This method can be awaited to ensure that all resources are released
-        /// before proceeding.</remarks>
-        /// <returns>A task that represents the asynchronous close operation. The task completes when all crawlers have been
-        /// closed.</returns>
         public async Task Close()
         {
             var res = await Task.WhenAll(_crawlers.Select(c => c.Crawler.Delete()));
