@@ -1,0 +1,39 @@
+
+
+# Build results
+bin/
+obj/
+
+# Visual Studio files
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Rider / VSCode
+.idea/
+.vscode/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+
+# Local settings / secrets (DO NOT COMMIT)
+appsettings.Development.json
+appsettings.Local.json
+settings.json
+settings.*.json
+.env
+
+TestResults/
+
+coverage/
+coverage.cobertura.xml
+
+publish/
+artifacts/
