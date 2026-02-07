@@ -31,8 +31,6 @@ namespace Labyrinth.Crawl
         /// <summary>
         /// Pass the tile in front of the crawler and move into it.
         /// </summary>
-        /// <param name="myInventory">The inventory of the crawler</param>
-        /// <returns>The inventory of the place reached, null if cannot walk in.</returns>
         Task<Inventory?> TryWalk(Inventory myInventory);
     }
 }

@@ -2,11 +2,6 @@
 {
     /// <summary>
     /// Direction in 2D space represented as cartesian deltas. 
-    /// Only instanciated using properties 
-    /// <see cref="North"/>, 
-    /// <see cref="East"/>, 
-    /// <see cref="South"/> and 
-    /// <see cref="West"/>.
     /// </summary>
     public class Direction : ICloneable
     {

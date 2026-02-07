@@ -33,21 +33,20 @@ public sealed class MapCoordinator : IAsyncDisposable
 
     public IReadOnlyDictionary<Position, CellKind> Snapshot() => _map.Snapshot();
 
-    public Position? ReserveFrontier(string agentId, Position agentPos)
+    public Position? ReserveFrontier(string agentId, Position agentPos, Func<Position, bool>? accept = null)
     {
-        var snapshot = _map.Snapshot();
         var frontiers = _map.GetFrontiers().Distinct().ToList();
         if (frontiers.Count == 0) return null;
 
-        // pick closest non-reserved
         Position? best = null;
         var bestScore = int.MaxValue;
 
         foreach (var f in frontiers)
         {
+            if (accept is not null && !accept(f)) continue;
+
             if (_reservations.TryGetValue(f, out var owner) && owner != agentId) continue;
 
-            // Manhattan (cheap, good enough)
             var score = Math.Abs(f.X - agentPos.X) + Math.Abs(f.Y - agentPos.Y);
             if (score < bestScore)
             {
@@ -72,14 +71,11 @@ public sealed class MapCoordinator : IAsyncDisposable
     {
         await foreach (var o in _obs.Reader.ReadAllAsync(_cts.Token))
         {
-            // Current cell is always a room (we stand on it)
             _map.Upsert(o.From, CellKind.Room);
 
-            // Facing cell
             var facing = o.From + o.Dir;
             _map.Upsert(facing, o.FacingKind);
 
-            // New position
             if (o.MovedTo is { } to)
                 _map.Upsert(to, CellKind.Room);
         }

@@ -25,6 +25,10 @@ public sealed class ExplorerAgent
         var start = DateTimeOffset.UtcNow;
         var rnd = new Random(Id.GetHashCode());
 
+        var blockedDoors = new HashSet<Position>();
+
+        var skippedFrontiers = new HashSet<Position>();
+
         while (!ct.IsCancellationRequested && DateTimeOffset.UtcNow - start < maxDuration)
         {
             var current = Position;
@@ -44,11 +48,16 @@ public sealed class ExplorerAgent
                 var inv = await _crawler.TryWalk(_bag);
                 if (inv is not null)
                 {
-                    
                     await _bag.TryMoveItemsFrom(
                         inv,
                         inv.ItemTypes.Select(_ => true).ToList()
                     );
+
+                    if (_bag.HasItems)
+                    {
+                        blockedDoors.Clear();
+                        skippedFrontiers.Clear();
+                    }
 
                     var movedTo = Position;
                     await _coord.PublishAsync(new Observation(
@@ -58,16 +67,45 @@ public sealed class ExplorerAgent
                         MovedTo: movedTo
                     ), ct);
 
-                    
                     await Task.Delay(10, ct);
                     continue;
                 }
             }
 
-            var frontier = _coord.ReserveFrontier(Id, current);
+            Position? frontier = null;
+
+            for (var attempt = 0; attempt < 8 && frontier is null; attempt++)
+            {
+                var candidate = _coord.ReserveFrontier(Id, current);
+                if (candidate is null) break;
+
+                var kind = _coord.Map.GetOrUnknown(candidate.Value);
+
+                if (skippedFrontiers.Contains(candidate.Value))
+                {
+                    _coord.ReleaseReservation(Id, candidate.Value);
+                    continue;
+                }
+
+                if (!_bag.HasItems && kind == CellKind.Door)
+                {
+                    skippedFrontiers.Add(candidate.Value);
+                    _coord.ReleaseReservation(Id, candidate.Value);
+                    continue;
+                }
+
+                if (kind == CellKind.Door && blockedDoors.Contains(candidate.Value))
+                {
+                    skippedFrontiers.Add(candidate.Value);
+                    _coord.ReleaseReservation(Id, candidate.Value);
+                    continue;
+                }
+
+                frontier = candidate;
+            }
+
             if (frontier is null)
             {
-
                 if (rnd.NextDouble() < 0.5) _crawler.Direction.TurnLeft();
                 else _crawler.Direction.TurnRight();
                 await Task.Delay(10, ct);
@@ -75,12 +113,20 @@ public sealed class ExplorerAgent
             }
 
             var snapshot = _coord.Snapshot();
-            var path = Pathfinder.BfsPath(snapshot, current, frontier.Value);
+
+            Func<CellKind, bool> traversable =
+                _bag.HasItems
+                    ? (k => k is CellKind.Room or CellKind.Door)
+                    : (k => k is CellKind.Room);
+
+            var path = Pathfinder.BfsPath(snapshot, current, frontier.Value, traversable);
 
             if (path.Count < 2)
             {
-
                 _coord.ReleaseReservation(Id, frontier.Value);
+
+                skippedFrontiers.Add(frontier.Value);
+
                 if (rnd.NextDouble() < 0.5) _crawler.Direction.TurnLeft();
                 else _crawler.Direction.TurnRight();
                 await Task.Delay(10, ct);
@@ -90,19 +136,22 @@ public sealed class ExplorerAgent
             var next = path[1];
             await TurnTowardAsync(current, next, ct);
 
-            
             var facingTypeNow = await _crawler.FacingTileType;
             var facingKindNow = TileTypeToKind(facingTypeNow);
-
 
             var inv2 = await _crawler.TryWalk(_bag);
             if (inv2 is not null)
             {
-            
                 await _bag.TryMoveItemsFrom(
                     inv2,
                     inv2.ItemTypes.Select(_ => true).ToList()
                 );
+
+                if (_bag.HasItems)
+                {
+                    blockedDoors.Clear();
+                    skippedFrontiers.Clear();
+                }
 
                 var movedTo = Position;
                 await _coord.PublishAsync(new Observation(
@@ -124,14 +173,16 @@ public sealed class ExplorerAgent
                     MovedTo: null
                 ), ct);
 
-                
-                if (realFacingKind is CellKind.Door)
+                if (realFacingKind == CellKind.Door)
                 {
-                    if (rnd.NextDouble() < 0.5) _crawler.Direction.TurnLeft();
-                    else _crawler.Direction.TurnRight();
+                    var doorPos = current + (_crawler.Direction.DeltaX, _crawler.Direction.DeltaY);
+                    blockedDoors.Add(doorPos);
                 }
-            }
 
+                if (rnd.NextDouble() < 0.5) _crawler.Direction.TurnLeft();
+                else _crawler.Direction.TurnRight();
+            }
+      
             if (Position.Equals(frontier.Value))
                 _coord.ReleaseReservation(Id, frontier.Value);
 
@@ -161,7 +212,7 @@ public sealed class ExplorerAgent
         {
             if ((_crawler.Direction.DeltaX, _crawler.Direction.DeltaY) == desired) break;
             _crawler.Direction.TurnLeft();
-            _ = await _crawler.FacingTileType; // sync remote direction if needed
+            _ = await _crawler.FacingTileType; 
         }
     }
 

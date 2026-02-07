@@ -29,7 +29,7 @@ public static class Pathfinder
                 var nxt = cur + d;
                 if (prev.ContainsKey(nxt)) continue;
 
-                if (!map.TryGetValue(nxt, out var kind)) continue; // unknown => not traversable
+                if (!map.TryGetValue(nxt, out var kind)) continue; 
                 if (!isTraversable(kind)) continue;
 
                 prev[nxt] = cur;
