@@ -27,11 +27,6 @@
         /// <summary>
         /// Attempts to move selected items from the specified source inventory to the current inventory.
         /// </summary>
-        /// <param name="source">The inventory from which items will be moved. Cannot be null.</param>
-        /// <param name="movesRequired">A list of Boolean values indicating which items in the source inventory to move. Each element corresponds to
-        /// an item; <see langword="true"/> selects the item for moving, <see langword="false"/> leaves it in the
-        /// source.</param>
-        /// <returns>true if all selected items were successfully moved; otherwise, false.</returns>
         public abstract Task<bool> TryMoveItemsFrom(
             Inventory source, 
             IList<bool> movesRequired

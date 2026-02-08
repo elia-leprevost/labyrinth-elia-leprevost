@@ -4,8 +4,6 @@
 	    {
 	        /// <summary>
 	        /// Creates a local (single-threaded) inventory.
-	        /// This is used by the training server / local maze builder.
-	        /// It must be public so callers outside the inheritance hierarchy can instantiate it.
 	        /// </summary>
 	        public LocalInventory(ICollectable? item = null) : base(item)
 	        {
@@ -14,9 +12,6 @@
         /// <summary>
         /// Move first item from the source inventory in a single threaded context (ex: labyrinth building).
         /// </summary>
-        /// <param name="from">The source inventory from which items will be moved.</param>
-        /// <returns>A task that represents the asynchronous operation. The task result is <see langword="true"/> if the move
-        /// operation succeeds; otherwise, <see langword="false"/>.</returns>
         public void MoveFirst(LocalInventory from)
         {
             if (!TryMoveItemsFrom(from, from.ItemTypes.Select((_, i) => i == 0).ToList()).Result)

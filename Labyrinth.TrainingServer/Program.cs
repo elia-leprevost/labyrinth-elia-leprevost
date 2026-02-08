@@ -10,7 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Labyrinth Training Server", Version = "v1" });
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Labyrinth Training Server", Version = "v2" });
 });
 
 builder.Services.AddSingleton<MazeSession>();

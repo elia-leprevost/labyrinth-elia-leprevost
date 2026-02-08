@@ -22,13 +22,10 @@ namespace Labyrinth
             }
         }
 
-        /// Labyrinth width (number of columns).
         public int Width { get; private init; }
 
-        /// Labyrinth height (number of rows).
         public int Height { get; private init; }
 
-        /// An ascii representation of the labyrinth.
         public override string ToString()
         {
             var res = new StringBuilder();
@@ -51,7 +48,6 @@ namespace Labyrinth
             return res.ToString();
         }
 
-        /// Instantiate a new crawler at the starting position.
         public ICrawler NewCrawler() =>
             new LabyrinthCrawler(_start.X, _start.Y, _tiles);
 
